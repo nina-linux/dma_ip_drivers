@@ -1,0 +1,35 @@
+name: Xilinx XVSEC Drivers and Software for Linux
+
+on:
+  push:
+    branches-ignore:
+     - master
+    paths:
+     - .github/workflows/**
+     - XVSEC/linux-kernel/**
+
+jobs:
+
+  build_xvsec_driver:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check gcc version
+      run: gcc --version
+    - name: Hack out EXPORT_SYMBOL_GPL
+      run: 'sed -i "s|^EXPORT_SYMBOL_GPL.*$| |g" XVSEC/linux-kernel/drv/xvsec_drv.c'
+    - name: Build driver
+      run: cd XVSEC/linux-kernel ; make V=1 drv -k | true
+
+  build_xvsec_apps:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check gcc version
+      run: gcc --version
+    - name: Build apps
+      run: cd XVSEC/linux-kernel ; make libxvsec ; make tools
+

@@ -1,0 +1,33 @@
+name: Xilinx XDMA Drivers and Software for Linux
+
+on:
+  push:
+    branches-ignore:
+     - master
+    paths:
+     - .github/workflows/**
+     - XDMA/linux-kernel/**
+     
+jobs:
+
+  build_xdma_driver:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check gcc version
+      run: gcc --version
+    - name: Build driver
+      run: cd XDMA/linux-kernel/xdma ; make V=1
+
+  build_xdma_apps:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check gcc version
+      run: gcc --version
+    - name: Build apps
+      run: cd XDMA/linux-kernel/tools ; make 
+

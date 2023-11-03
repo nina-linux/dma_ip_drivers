@@ -1,0 +1,34 @@
+name: Xilinx QDMA Drivers and Software for Linux
+
+on:
+  push:
+    branches-ignore:
+     - master
+    paths:
+     - .github/workflows/**
+     - QDMA/linux-kernel/**
+
+jobs:
+
+  build_qdma_driver:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check gcc version
+      run: gcc --version
+    - name: Build driver
+      run: cd QDMA/linux-kernel ; make V=1 driver
+
+  build_qdma_apps:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check gcc version
+      run: gcc --version
+    - name: Install dependencies
+      run: sudo apt-get install -y libaio-dev
+    - name: Build apps
+      run: cd QDMA/linux-kernel ; make apps ; make post

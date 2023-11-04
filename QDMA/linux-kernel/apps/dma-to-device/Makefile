@@ -26,7 +26,7 @@ ifneq ($(CROSS_COMPILE_FLAG),)
 	CC=$(CROSS_COMPILE_FLAG)gcc
 endif
 
-all: clean dma-to-device
+all: dma-to-device
 
 dma-to-device: $(DMA-TO-DEVICE_OBJS)
 	$(CC) -lrt -o $@ $< -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -D_LARGE_FILE_SOURCE

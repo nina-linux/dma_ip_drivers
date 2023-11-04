@@ -26,7 +26,7 @@ ifneq ($(CROSS_COMPILE_FLAG),)
 	CC=$(CROSS_COMPILE_FLAG)gcc
 endif
 
-all: clean dma-latency
+all: dma-latency
 
 dma-latency: $(DMA-LAT_OBJS)
 	$(CC) -pthread -lrt -o $@ $^ -laio -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -D_LARGE_FILE_SOURCE

@@ -26,7 +26,7 @@ ifneq ($(CROSS_COMPILE_FLAG),)
 	CC=$(CROSS_COMPILE_FLAG)gcc
 endif
  
-all: clean dma-ctl
+all: dma-ctl
 
 dma-ctl: $(DMA-CTL_OBJS)
 	$(CC) -pthread -lrt $^ -o $(DMA-CTL) -laio -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -D_LARGE_FILE_SOURCE

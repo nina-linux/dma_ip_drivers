@@ -29,7 +29,7 @@ dma-latency_dir = $(srcdir)/dma-latency
 export topdir
 export bin_dir
 
-all: clean apps
+all: apps
 
 .PHONY: dma-from-device
 dma-from-device:

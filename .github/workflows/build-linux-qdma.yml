@@ -31,4 +31,4 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get install -y libaio-dev
     - name: Build apps
-      run: cd QDMA/linux-kernel ; make apps ; make post
+      run: cd QDMA/linux-kernel ; make -j 8 apps ; make post

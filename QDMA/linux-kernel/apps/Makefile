@@ -31,8 +31,12 @@ export bin_dir
 
 all: apps
 
+.PHONY: dma-utils
+dma-utils:
+	${MAKE} -C $@
+
 .PHONY: dma-from-device
-dma-from-device:
+dma-from-device: dma-utils
 	@echo "#############################";
 	@echo "####  dma-from-device    ####";
 	@echo "#############################";
@@ -40,7 +44,7 @@ dma-from-device:
 	@cp -f $(dma-from-device_dir)/dma-from-device $(bin_dir)	
 
 .PHONY: dma-to-device
-dma-to-device:
+dma-to-device: dma-utils
 	@echo "###########################";
 	@echo "####  dma-to-device    ####";
 	@echo "###########################";
@@ -48,7 +52,7 @@ dma-to-device:
 	@cp -f $(dma-to-device_dir)/dma-to-device $(bin_dir)	
 	
 .PHONY: dma-xfer
-dma-xfer:
+dma-xfer: dma-utils
 	@echo "###########################";
 	@echo "####  dma-xfer         #####";
 	@echo "###########################";
@@ -56,7 +60,7 @@ dma-xfer:
 	@cp -f $(dma-xfer_dir)/dma-xfer $(bin_dir)		
 
 .PHONY: dma-ctl
-dma-ctl:
+dma-ctl: dma-utils
 	@echo "#######################";
 	@echo "####  dma-ctl    ######";
 	@echo "#######################";
@@ -66,7 +70,7 @@ dma-ctl:
 
 
 .PHONY: dma-perf
-dma-perf:
+dma-perf: dma-utils
 	@echo "########################";
 	@echo "####  dma-perf    #######";
 	@echo "########################";
@@ -74,7 +78,7 @@ dma-perf:
 	@cp -f $(dma-perf_dir)/dma-perf $(bin_dir)	
 
 .PHONY: dma-latency
-dma-latency:
+dma-latency: dma-utils
 	@echo "########################";
 	@echo "####  dma-latency   #######";
 	@echo "########################";

@@ -11,16 +11,60 @@ on:
 jobs:
 
   build_xvsec_driver:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+
+# Build for a different kernel version.
+# Based on https://github.com/hmaarrfk/dma_ip_drivers/blob/main_2020.2.1/.github/workflows/ubuntu_qdma.yml
+    env:
+      KERNEL_VERSION_BUILD: "5.8.0-63.71~20.04.1"
 
     steps:
     - uses: actions/checkout@v4
-    - name: Check gcc version
-      run: gcc --version
+    - name: Check versions
+      run: |
+           wget --version
+           uname -a
+    - name: Fetch Kernel Headers
+      run: |
+        echo "KERNEL_VERSION_BUILD = ${KERNEL_VERSION_BUILD}"
+        KVER=$(echo ${KERNEL_VERSION_BUILD} | cut -d '.'  -f 1-2)
+        echo "KVER = $KVER"
+        DEBVER=$(echo ${KERNEL_VERSION_BUILD} | cut -d '.' -f 1-3)
+        echo "DEBVER = $DEBVER"
+
+        # From packages.ubuntu.com:
+        # http://security.ubuntu.com/ubuntu/pool/main/l/linux-hwe-${KVER}/linux-headers-5.8.0-63-generic_5.8.0-63.71~20.04.1_amd64.deb
+        # http://security.ubuntu.com/ubuntu/pool/main/l/linux-hwe-5.8/linux-hwe-5.8-headers-5.8.0-63_5.8.0-63.71~20.04.1_all.deb
+
+        wget --tries=3 http://security.ubuntu.com/ubuntu/pool/main/l/linux-hwe-5.8/linux-headers-${DEBVER}-generic_${KERNEL_VERSION_BUILD}_amd64.deb
+        echo "Fetched AMD64 package"
+
+        wget http://security.ubuntu.com/ubuntu/pool/main/l/linux-hwe-${KVER}/linux-hwe-${KVER}-headers-${DEBVER}_${KERNEL_VERSION_BUILD}_all.deb
+        # echo "Fetched ALL package"
+        sudo apt install --yes --quiet \
+          ./linux-headers-${DEBVER}-generic_${KERNEL_VERSION_BUILD}_amd64.deb \
+          ./linux-hwe-${KVER}-headers-${DEBVER}_${KERNEL_VERSION_BUILD}_all.deb
+        ls -l /lib/modules
     - name: Hack out EXPORT_SYMBOL_GPL
       run: 'sed -i "s|^EXPORT_SYMBOL_GPL.*$| |g" XVSEC/linux-kernel/drv/xvsec_drv.c'
     - name: Build driver
-      run: cd XVSEC/linux-kernel ; make V=1 drv -k | true
+      run: |
+        cd XVSEC/linux-kernel
+        export XVSEC_KVER=$(echo ${KERNEL_VERSION_BUILD} | cut -d '.' -f 1-3)-generic
+        make V=1 -k drv
+    - name: Check for built module
+      run: |
+        cd XVSEC/linux-kernel
+        ls -la build/modules
+        if [ -e build/modules/xvsec.ko ] ; then
+          echo "Module xvsec.ko built"
+        else
+          echo "ERROR: xvsec.ko NOT FOUND in build/modules"
+          ls -la build.modules
+        fi
+
+# To try to build other versions
+# KDIR=/lib/modules/$(echo ${KERNEL_VERSION_BUILD} | cut -d '.' -f 1-3)-generic/build
 
   build_xvsec_apps:
 

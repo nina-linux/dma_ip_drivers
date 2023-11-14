@@ -1,5 +1,5 @@
 XVSEC_HOME := $(shell pwd)
-XVSEC_KVER := $(shell uname -r)
+XVSEC_KVER ?= $(shell uname -r)
 
 build_path := ../build
 module_path := $(build_path)/modules

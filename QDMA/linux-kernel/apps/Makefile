@@ -16,6 +16,8 @@ CFLAGS += -g
 #CFLAGS += -O2 -fno-inline -Wall -Wstrict-prototypes
 CFLAGS += $(EXTRA_FLAGS)
 
+export LDLIBS += -lrt -laio
+
 srcdir := $(shell pwd)
 topdir := $(shell cd $(srcdir)/.. && pwd)
 bin_dir := $(topdir)/bin
